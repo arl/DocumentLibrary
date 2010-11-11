@@ -1,0 +1,21 @@
+[ --------------------------------------- ]
+[ processus apres instantiation de libmgr ]
+[ --------------------------------------- ]
+
+
+l'emplacement du fichier de description de la lib (indexes) est une valeur contenue dans le fichier de configuration principal
+
+si un fichier de description de la librairie est present, on lit les fichiers de la lib
+	si fichier incorrect/malforme => on informe l'user que l'index est endommage
+
+si un fichier de description n'est pas present, on en cree un contenant un index vide
+
+
+
+
+	A etayer :
+
+que contient le fichier de description : 
+	-	principalement la structure des dossiers virtuels (regroupements choisis par l'utilisateur de ses documents) avec pour chaque fichier : 
+		-	son id_file (index primaire dans la base de données sqlite)
+

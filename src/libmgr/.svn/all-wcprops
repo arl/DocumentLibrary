@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 28
+/!svn/ver/1/trunk/src/libmgr
+END
+doc_database.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/!svn/ver/1/trunk/src/libmgr/doc_database.hpp
+END
+virtual_folder.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/!svn/ver/1/trunk/src/libmgr/virtual_folder.cpp
+END
+doc_file_item.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/!svn/ver/1/trunk/src/libmgr/doc_file_item.cpp
+END
+virtual_folder.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/!svn/ver/1/trunk/src/libmgr/virtual_folder.hpp
+END
+doc_file_item.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/!svn/ver/1/trunk/src/libmgr/doc_file_item.hpp
+END
+libmgr_includes.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/!svn/ver/1/trunk/src/libmgr/libmgr_includes.hpp
+END
+doc_database.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/!svn/ver/1/trunk/src/libmgr/doc_database.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/!svn/ver/1/trunk/src/libmgr/CMakeLists.txt
+END

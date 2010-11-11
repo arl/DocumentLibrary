@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/!svn/ver/1/trunk/src/tinyxml
+END
+tinyxmlerror.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/!svn/ver/1/trunk/src/tinyxml/tinyxmlerror.cpp
+END
+tinystr.h
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/!svn/ver/1/trunk/src/tinyxml/tinystr.h
+END
+tinyxmlparser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/!svn/ver/1/trunk/src/tinyxml/tinyxmlparser.cpp
+END
+tinyxml.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/!svn/ver/1/trunk/src/tinyxml/tinyxml.cpp
+END
+tinyxml.h
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/!svn/ver/1/trunk/src/tinyxml/tinyxml.h
+END
+tinystr.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/!svn/ver/1/trunk/src/tinyxml/tinystr.cpp
+END

@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 26
+/!svn/ver/1/trunk/src/core
+END
+doclib_exception.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/!svn/ver/1/trunk/src/core/doclib_exception.hpp
+END
+inifile.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/!svn/ver/1/trunk/src/core/inifile.cpp
+END
+doclib_conf.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/!svn/ver/1/trunk/src/core/doclib_conf.cpp
+END
+core_includes.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/!svn/ver/1/trunk/src/core/core_includes.hpp
+END
+doclib_core.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/!svn/ver/1/trunk/src/core/doclib_core.cpp
+END
+inifile.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/!svn/ver/1/trunk/src/core/inifile.hpp
+END
+doclib_conf.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/!svn/ver/1/trunk/src/core/doclib_conf.hpp
+END
+doclib_core.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/!svn/ver/1/trunk/src/core/doclib_core.hpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/!svn/ver/1/trunk/src/core/CMakeLists.txt
+END

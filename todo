@@ -1,0 +1,6 @@
+[.vimprojects]
+let it be generic for other users so they just have to change project path or better, let cmake do this (in a ideal world when the project is finished, polished and i slept at least 8 hours the night before)
+
+
+[doxygen]
+faire en sorte que le plugin doxygen opur trac permtte d'afficher la doc de l'API dans trac (le dosser html genere par doxygen est dans /var/local/doxygen/doclib)

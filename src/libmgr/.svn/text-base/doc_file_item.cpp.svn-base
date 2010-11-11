@@ -1,0 +1,15 @@
+#include "doc_file_item.hpp"
+
+namespace doclib
+{
+
+    namespace libmgr
+    {
+
+        doc_file_item::doc_file_item(int id, string path, string filetype)
+            :	_id(id), _path(path), _filetype(filetype)
+        {}
+
+    }
+
+}

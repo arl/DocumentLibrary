@@ -1,0 +1,34 @@
+#ifndef DOCLIB_LIBMGR_DOC_DATABASE_HPP
+#define DOCLIB_LIBMGR_DOC_DATABASE_HPP
+
+#include "libmgr_includes.hpp"
+#include "../core/doclib_conf.hpp"
+
+namespace doclib
+{
+
+    namespace libmgr
+    {
+
+        class doc_database
+        {
+
+            public:
+
+				
+				static void create_instance(const core::doclib_conf& conf);
+				static doc_database& get_instance();
+
+            private:
+
+				static doc_database* p_instance;
+
+                doc_database(const core::doclib_conf& conf);
+                const core::doclib_conf& _conf;
+        };
+
+    }
+
+}
+
+#endif // !DOCLIB_LIBMGR_DOC_DATABASE_HPP

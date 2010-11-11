@@ -1,0 +1,34 @@
+#include "doc_database.hpp"
+
+namespace doclib
+{
+
+    namespace libmgr
+    {
+
+		// singleton instance
+		doc_database * doc_database::p_instance = 0;
+
+		void doc_database::create_instance(const core::doclib_conf & conf)
+		{
+			assert(p_instance == 0);
+			p_instance = new doc_database(conf);
+		}
+
+		doc_database& doc_database::get_instance()
+		{
+			assert(p_instance);
+			return *p_instance;
+		}
+
+
+        doc_database::doc_database(const core::doclib_conf & conf)
+            :	_conf(conf)
+        {
+            //std::cout << "doc_database constructor" << std::endl;
+			LDBG_ << "doc_database constructor";
+        }
+
+    }
+
+}
