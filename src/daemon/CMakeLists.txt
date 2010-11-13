@@ -37,3 +37,27 @@ add_custom_command(TARGET doclibd
 
 # add the install targets
 install (TARGETS doclibd DESTINATION "${DOCLIBRARY_BINARY_DIR}/bin")
+
+# create list of configuration files
+list(APPEND CONFIG_FILES "db.xml" "doclibd.conf")
+set(CONFIG_DIR "${DOCLIBRARY_SOURCE_DIR}/config")
+
+# install default configuration files is they don't exist on the system
+foreach(file ${CONFIG_FILES})
+
+	set(result "NOTFOUND")
+
+			  #PATHS ${DOCLIBRARY_SOURCE_DIR}/
+	# look for config file in install dir
+	find_file(result "${file}"
+			PATHS "${DOCLIBRARY_BINARY_DIR}/bin"
+			NO_DEFAULT_PATH)
+
+	if(result STREQUAL "result-NOTFOUND")	
+		#install(FILES "${CONFIG_DIR}/${file}" DESTINATION "${DOCLIBRARY_BINARY_DIR}/bin")
+		message("file \"${file}\" not found in installation dir, copying to ${DOCLIBRARY_BINARY_DIR}/bin")
+		configure_file("${CONFIG_DIR}/${file}" "${DOCLIBRARY_BINARY_DIR}/bin/${file}" COPYONLY)
+	endif(result STREQUAL "result-NOTFOUND")
+
+endforeach(file)
+

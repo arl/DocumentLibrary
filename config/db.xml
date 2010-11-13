@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+	<!--
+		Creer le dtd a l'occasion
+		<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+	!-->
+<folder_structure>
+	<root_path>/home/orl/doclib_database</root_path>
+	<virtual_folder name="/" id="-1">
+		<children>
+			<file id="1">
+				<path relative="1">example_file.pdf</path>
+			</file>
+			<virtual_folder name="vdir1" id="-2">
+				<children>
+					<file id="2">
+						<path relative="1">example_file2.pdf</path>
+					</file>
+				</children>
+			</virtual_folder>
+		</children>
+	</virtual_folder>
+</folder_structure>
