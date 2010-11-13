@@ -16,14 +16,16 @@ enum eStartupReturn
 
 // local instances
 string config_file;
-string version;
+string version_str;
 doclib::core::doclib_conf cfg;
 
 void set_version_string()
 {
-	version.assign(lexical_cast<string>(DOCLIBD_VERSION_VERSION));
-	version.append(".");
-	version.append(lexical_cast<string>(DOCLIBD_VERSION_BUILD));
+	version_str.assign(lexical_cast<string>(doclib::version::major));
+	version_str.append(".");
+	version_str.append(lexical_cast<string>(doclib::version::minor));
+	version_str.append(".");
+	version_str.append(lexical_cast<string>(doclib::version::build));
 }
 
 int treat_command_line(int argc, char ** argv)
@@ -41,7 +43,7 @@ int treat_command_line(int argc, char ** argv)
 
 	if (vm.count("help"))
 	{
-		cout << "DocLibrary version " << version << "\n";
+		cout << "DocLibrary version " << version_str << "\n";
 		cout << desc << "\n";
 		return EXIT_FAILURE;
 	}
@@ -62,6 +64,7 @@ int treat_command_line(int argc, char ** argv)
 int main(int argc, char ** argv)
 {
 	set_version_string();
+	cout << "DocumentLibrary version " << version_str << endl;
 	treat_command_line(argc, argv);
 
 	if (cfg.load(config_file))

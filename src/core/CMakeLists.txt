@@ -4,8 +4,7 @@
 # description : builds libcore static library			#
 #########################################################
 
-#add_library(core STATIC doclib_conf.cpp doclib_core.cpp)
-add_library(core inifile.cpp doclib_conf.cpp doclib_core.cpp)
+add_library(core version.cpp inifile.cpp doclib_conf.cpp doclib_core.cpp)
 
 # link with following libraries :
 #	boost::system

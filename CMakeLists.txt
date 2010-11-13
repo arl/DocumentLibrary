@@ -7,6 +7,7 @@
 project (DOCLIBRARY CXX)
 set (DOCLIBRARY_VERSION_MAJOR 0)
 set (DOCLIBRARY_VERSION_MINOR 1)
+set (DOCLIBRARY_VERSION_BUILD 16)
 cmake_minimum_required (VERSION 2.6)
 
 
@@ -19,13 +20,18 @@ FIND_PACKAGE( Boost 1.42 COMPONENTS system filesystem program_options )
 enable_testing()
 
 # sets binary and source directories
-#set (DOCLIBRARY_SOURCE_DIR "./src/")
-#set (DOCLIBRARY_BINARY_DIR "${DOCLIBRARY_SOURCE_DIR}/../doclib_install/")
-set (DOCLIBRARY_SOURCE_DIR ".")
+#set (DOCLIBRARY_SOURCE_DIR ".")
+set (DOCLIBRARY_SOURCE_DIR "/home/orl/dev/DocumentLibrary")
 set (DOCLIBRARY_BINARY_DIR "/home/orl/dev/doclib_install")
 
-message (STATUS 
-	"currently generating : ${CMAKE_GENERATOR}")
+message ("currently generating : ${CMAKE_GENERATOR}")
+
+# define program to read a file (platform-wise)
+#if(WIN32)
+	#set(CAT_PROG type)
+#elseif(UNIX)
+	#set(CAT_PROG cat)
+#endif(WIN32)
 
 # add cmake subprojects
 add_subdirectory (src/core)

@@ -28,5 +28,12 @@ target_link_libraries(doclibd libboost_filesystem.so)
 add_dependencies(doclibd libmgr)
 add_dependencies(doclibd core)
 
+# increment build number when doclibd target has been successfully built
+add_custom_command(TARGET doclibd
+				   POST_BUILD
+				   WORKING_DIRECTORY "${DOCLIBRARY_SOURCE_DIR}/src/"
+				   COMMAND ./increment_number.sh "core/version.cpp" "build" "core/version.cpp"
+				   COMMENT "incrementing build number")
+
 # add the install targets
 install (TARGETS doclibd DESTINATION "${DOCLIBRARY_BINARY_DIR}/bin")
