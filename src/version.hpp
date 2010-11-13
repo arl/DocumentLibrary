@@ -1,9 +1,17 @@
-#ifndef DOCLIB_DOCLIBD_VERSION_HPP
-#define DOCLIB_DOCLIBD_VERSION_HPP
+#ifndef DOCLIB_DOCLIB_VERSION_HPP 
+#define DOCLIB_DOCLIB_VERSION_HPP 
 
-	#define DOCLIBD_VERSION_BUILD		16
-	#define DOCLIBD_VERSION_VERSION		0
+namespace doclib
+{
 
-#endif // !DOCLIB_DOCLIBD_VERSION_HPP
+	struct version
+	{
+		static unsigned int major;
+		static unsigned int minor;
+		static unsigned int build;
+	};
 
+}
+
+#endif // !DOCLIB_DOCLIB_VERSION_HPP 
 
