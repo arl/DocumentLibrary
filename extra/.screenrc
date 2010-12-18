@@ -1,0 +1,23 @@
+caption always "%{Yb} %04d-%02m-%Y %0c %{k}|%{C} %H %{k}|%{G} %l %{k}|%{W} %-Lw%{R}%n %t%{W}%+Lw"
+
+# create one window for source code
+screen -t source  /usr/bin/vi /home/orl/dev/DocumentLibrary +Project
+
+# create another one
+screen -t source2  /usr/bin/vi /home/orl/dev/DocumentLibrary +Project
+
+# one window for install directory
+chdir /home/orl/dev/doclib_install/bin/
+screen -t install
+
+# one window for build directory
+chdir /home/orl/dev/doclib_build
+screen -t build
+
+# and one for git root directory
+chdir /home/orl/dev/DocumentLibrary
+screen -t git
+
+# give a name to session
+sessionname doclib
+select source
