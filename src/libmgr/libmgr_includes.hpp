@@ -22,6 +22,7 @@
 ///////////////////////////////////////
 
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/logging/logging.hpp>
 
 
@@ -31,5 +32,6 @@
 namespace bfs = boost::filesystem;
 namespace bl = boost::logging;
 
+using boost::lexical_cast;
 
 #endif // !DOCLIB_LIBMGR_LIB_MGR_INCLUDES_HPP

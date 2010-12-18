@@ -25,7 +25,7 @@ namespace doclib
 				*	as _max_id -1
 				* @param path name of the virtual_folder
 				*/
-                virtual_folder(string path, virtual_folder * pparent);
+                virtual_folder(string path, sp_virtual_folder sp_parent);
 
 				/**
 				* @brief 'xml file-created' virtual folder
@@ -33,44 +33,52 @@ namespace doclib
 				* @param path name of virtual folder
 				* @param id virtual folder id indicated in xml file
 				*/
-                virtual_folder(string path, int id, virtual_folder * pparent);
+                virtual_folder(string path, int id, sp_virtual_folder sp_parent);
+
                 static int _max_id;
 
             protected:
 
-                typedef list<doc_file_item*> file_list_t;
+                typedef list<sp_doc_file_item> file_list_t;
+
                 file_list_t _children;
 
             public:
 
                 // add a child to this virtual folder
-                void add_child(doc_file_item * p_file);
+                void add_child(sp_doc_file_item sp_file);
 
                 // remove a child
                 void remove_child(int child_id);
 
                 // call some function for each child
                 template<class _Pred>
-                    void for_each_child(_Pred p, bool recursive = false)
+                    void for_each_child(_Pred p, bool recursive = false, bool pred_called_last = false)
                 {
                     file_list_t::iterator it = _children.begin();
                     while(it != _children.end())
                     {
-                        doc_file_item * p_cur = *it;
-                        // call predicate on current child
-                        p(p_cur);
+                        sp_doc_file_item sp_cur = *it;
+
+                        // call predicate on current child (default : before recursion)
+						if (!pred_called_last) 
+							p(sp_cur);
 
                         // recurse in this virtual folder
-                        if (recursive && p_cur->get_id() < 0)
+                        if (recursive && sp_cur->get_id() < 0)
                         {
-                            static_cast<virtual_folder*>(p_cur)->for_each_child(p, true);
+                            static_cast<virtual_folder*>(sp_cur.get())->for_each_child(p, true);
                         }
+
+                        // call predicate on current child (after recursion)
+						if (pred_called_last) 
+							p(sp_cur);
 
                         ++it;
                     }
                 }
 
-        };
+    	};
 
     }
 

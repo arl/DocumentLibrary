@@ -60,7 +60,7 @@ int treat_command_line(int argc, char ** argv)
 
 	return EXIT_SUCCESS;
 }
-
+/*
 int main(int argc, char ** argv)
 {
 	set_version_string();
@@ -74,11 +74,18 @@ int main(int argc, char ** argv)
 		LDBG_ << "successfully loaded configuration file";
 		
 		doclib::libmgr::doc_database::create_instance(cfg);
-
-		if (doclib::libmgr::doc_database::get_instance().load_database())
+		
+		try
 		{
-			LDBG_ << "successfully loaded document database";
-			return EXIT_SUCCESS;
+			if (doclib::libmgr::doc_database::get_instance().load_database())
+			{
+				LDBG_ << "successfully loaded document database";
+				return EXIT_SUCCESS;
+			}
+		}
+		catch (std::exception &e)
+		{
+			LERR_ << "exception thrown " << e.what();
 		}
 		LERR_ << "couldn't load document database";
 	}
@@ -87,4 +94,52 @@ int main(int argc, char ** argv)
 
 	return EXIT_FAILURE;
 
+}
+*/
+
+
+int main(int argc, char ** argv)
+{
+	int ret = EXIT_FAILURE;
+
+	try
+	{
+		set_version_string();
+		cout << "DocumentLibrary version " << version_str << endl;
+		treat_command_line(argc, argv);
+
+		if (cfg.load(config_file))
+		{
+			// init log instance, providing it 'ini file loaded' values
+			doclib::core::core_services::init_logging(cfg.log_filename, cfg.log_level);
+			LDBG_ << "successfully loaded configuration file";
+
+			doclib::libmgr::doc_database::create_instance(cfg);
+
+			if (doclib::libmgr::doc_database::get_instance().load_database())
+			{
+				LDBG_ << "successfully loaded document database";
+				ret = EXIT_SUCCESS;
+			}
+			else
+				LERR_ << "couldn't load document database";
+
+			// here we will start the socket listening threads
+			// here we will start the socket listening threads
+			// here we will start the socket listening threads
+			// here we will start the socket listening threads
+
+
+			// we can destroy database singleton instance
+			doclib::libmgr::doc_database::destroy_instance();
+		}
+		else
+			cerr << "incorrect configuration (" << config_file << ")" << endl;
+	}
+	catch(std::exception &e)
+	{
+		LERR_ << "exception thrown : " << e.what();
+	}
+
+	return ret;
 }

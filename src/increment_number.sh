@@ -73,8 +73,7 @@ fi
 # now writes the result to the desired file
 if [ -z $OUT ]; then
 	# to standard output
-	cat $TMPFILE
-	rm -f $TMPFILE
+	cat $TMPFILE && rm -f $TMPFILE
 else
 	# to output file
 	mv $TMPFILE $OUT

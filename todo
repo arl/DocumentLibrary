@@ -5,7 +5,3 @@ let it be generic for other users so they just have to change project path or be
 [doxygen]
 faire en sorte que le plugin doxygen opur trac permtte d'afficher la doc de l'API dans trac (le dosser html genere par doxygen est dans /var/local/doxygen/doclib)
 
-
-[CMake : increment build number]
-
-create an executable (ideally from source for it to be cross-platorm) that will increment build number

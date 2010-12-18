@@ -19,3 +19,23 @@ que contient le fichier de description :
 	-	principalement la structure des dossiers virtuels (regroupements choisis par l'utilisateur de ses documents) avec pour chaque fichier : 
 		-	son id_file (index primaire dans la base de données sqlite)
 
+
+
+REVOIR LE SYSTEME DE GESTION DE doc_file_item, a cause de la gestion memoire :
+ _ soit les utiliser en tant que shared_ptr
+ _ soit ne pouvoir les creer et les detruire qu'a partir d'une factory qui garde reference de chacun d'eux
+ _ soit utiliser un systeme de handle (deja a moitie present avec l'id), les handles corespondant aux pointeurs reels dans une array (list/vector/whatever) de doc_database mais sinon ailleurs on manipule les handles, ainsi lorsq'in ajoute/supprime/deplace un doc_file_item on ne modifie qu'un handle, les pointeurs eux sont stockés ailleurs
+
+
+
+
+
+-----------------------------------------------------
+parties multithreads du programme : 
+
+le gestionnaire d'evenements  : 
+ - les ordres peuvent provenir eventuellement de (1,N) sockets locaux differents donc potentiellement
+ 	avec des actions de sens contraires.
+ - implementation d'une liste multithreaded, chaque action ayant ete actionnée en prelmier doit etre réalisée en premier lieu.
+
+ - comme ttes les actions seront actionnes depuis le handler du socket, ,si une seule fonction est appellee depuis le handler, c'est cette fonction qui devra etre thread-safe.

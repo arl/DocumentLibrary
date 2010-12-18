@@ -2,6 +2,7 @@
 #define DOCLIB_LIBMGR_DOC_DATABASE_HPP
 
 #include "libmgr_includes.hpp"
+#include "virtual_folder.hpp"
 #include "../core/doclib_conf.hpp"
 
 namespace doclib
@@ -13,7 +14,7 @@ namespace doclib
 		using namespace std;
 
 		// forwafrd declaration
-		class virtual_folder;
+		//class sp_virtual_folder;
 
 
         class doc_database
@@ -31,6 +32,11 @@ namespace doclib
 				* @param conf main configuration file
 				*/
 				static void create_instance(const core::doclib_conf& conf);
+				
+				/**
+				* @brief destroy doc_database singleton instance
+				*/
+				static void destroy_instance();
 
 				/**
 				* @brief get doc_database singleton instance
@@ -51,9 +57,9 @@ namespace doclib
 				/**
 				* @brief get root virtual folder
 				*
-				* @return root virtual folder pointer
+				* @return root virtual folder shared pointer
 				*/
-				virtual_folder * get_root_vf() { return _proot_vf;}
+				sp_virtual_folder get_root_vf() { return _sproot_vf;}
 
             private:
 
@@ -61,11 +67,13 @@ namespace doclib
 
                 doc_database(const core::doclib_conf& conf);
 
+                ~doc_database();
+
                 const core::doclib_conf& _conf;
 
 				bool load_description_file();
 
-				virtual_folder *	_proot_vf;		// root virtual folder
+				sp_virtual_folder	_sproot_vf;		// root virtual folder
 				string				_root_path;		// database root path
         };
 

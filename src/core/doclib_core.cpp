@@ -85,7 +85,6 @@ namespace doclib
 			g_l()->writer().add_destination( bl::destination::file(log_file) );
 			g_l()->turn_cache_off();
 		}
-
 		
 	}
 
