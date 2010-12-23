@@ -17,7 +17,7 @@ namespace doclib
 
 			int indent;
 	
-			void operator () (sp_doc_file_item spfi)
+			void operator () (doc_file_item_pointer spfi)
 			{
 				//if (pfi->get_file_type() == "vfolder")
 				//{
@@ -28,22 +28,6 @@ namespace doclib
 			}
 		};
 
-		/**
-		* @brief predicate for deallocating file items
-		*/
-		/*
-		struct free_file_item
-		{
-			void operator () (doc_file_item * pfi)
-			{
-				LDBG_ << "freeing " << pfi->get_path() << " at address " << lexical_cast<string>(pfi);
-				assert(pfi);
-				delete pfi;
-				pfi = 0;
-			}
-		};
-		*/
-
 
 		/**
 		* @brief virtual folder visitor for xml vi_folder description file
@@ -53,8 +37,8 @@ namespace doclib
 			private:
 
 				ostream & out;
-				sp_virtual_folder _sproot_vf;
-				sp_virtual_folder _spcur_vf;
+				virtual_folder_pointer _sproot_vf;
+				virtual_folder_pointer _spcur_vf;
 
 				// different visitor states
 				enum { eVirtualFolder, eChildren, eFile };
@@ -79,7 +63,7 @@ namespace doclib
 				virtual ~v_folder_visitor() {}
 
 
-				sp_virtual_folder get_root_vf() { return _sproot_vf; }
+				virtual_folder_pointer get_root_vf() { return _sproot_vf; }
 				
 
 				/// Visit an element.
@@ -112,20 +96,23 @@ namespace doclib
 						if (name == "/")
 						{
 							// actually create root virtual folder
-							sp_virtual_folder sp_empty;	
+							virtual_folder_pointer sp_empty;	
 
 							// let create the root virtual folder as a shared pointer
-							_spcur_vf = _sproot_vf = sp_virtual_folder (new virtual_folder(name, -1, sp_empty));
+							_spcur_vf = _sproot_vf = virtual_folder::create (name, -1, sp_empty);
 							LDBG_ << "allocating root at address " << lexical_cast<string>(_sproot_vf.get());
 						}
 						else
 						{
 							// create a new virtual folder
-							sp_virtual_folder sp_new_vf = sp_virtual_folder (new virtual_folder(name, id, _spcur_vf));
-
+							virtual_folder_pointer sp_new_vf = virtual_folder::create(name, id, _spcur_vf);
 							LDBG_ << "allocating " << sp_new_vf->get_path()  << " at address " << lexical_cast<string>(sp_new_vf.get());
+
 							// add it to current vf
 							_spcur_vf->add_child(sp_new_vf);
+
+							// now let it be the current virtual folder for next processing
+							_spcur_vf = sp_new_vf;
 						}
 					}
 					else if (tag_name == "children")
@@ -177,7 +164,7 @@ namespace doclib
 						// change back current virtual folder	
 						if (elt.Attribute("name") != "/")
 						{
-							// let current virtual folder parent be the new current one
+							// current virtual folder's parent become the current one
 							_spcur_vf = _spcur_vf->get_parent();
 						}
 					}
@@ -200,7 +187,7 @@ namespace doclib
 							L_ << "file \"" << file.string() << "\", id:" << _last_id  << " not found";
 						
 						// create the file with information obtained previously
-						sp_doc_file_item spf = sp_doc_file_item(new doc_file_item(_last_id, file.string(), file.extension(), _spcur_vf));
+						doc_file_item_pointer spf = doc_file_item::create(_last_id, file.string(), file.extension(), _spcur_vf);
 						// add it as a child to current vf
 						_spcur_vf->add_child(spf);
 					}

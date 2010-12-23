@@ -17,11 +17,11 @@ namespace doclib
 		class virtual_folder;
 		class doc_file_item;
 
-		typedef std::tr1::shared_ptr<doc_file_item> sp_doc_file_item;
-		typedef std::tr1::shared_ptr<virtual_folder> sp_virtual_folder;
+		typedef std::tr1::shared_ptr<doc_file_item> doc_file_item_pointer;
+		typedef std::tr1::shared_ptr<virtual_folder> virtual_folder_pointer;
 
-        /** doc_file_item is abstract file represntation, can be a container of files
-         *	or a concrete file residing on the filesystem
+        /** doc_file_item is an abstract file representation, can be a file (typically a document of the library)
+         *	or be a file container (virtual folder)
          */
         class doc_file_item
         {
@@ -29,12 +29,27 @@ namespace doclib
 
             protected:
 
-                doc_file_item(int id, string path, string filetype, sp_virtual_folder sp_parent);
+				/**
+				* @brief convenience function to create a doc_file_item shared pointer
+				* @param id file id read from xml configuration file
+				* @param path name of the virtual_folder
+				* @param filetype file type, should reflect extension for 'non text-files'
+				* @param sp_parent virtual_folder parent
+				*/
+				static doc_file_item_pointer create(int id, string path, string filetype, virtual_folder_pointer sp_parent);
+				
+				/**
+				* @brief constructor for document file
+				* @param id file id read from xml configuration file
+				* @param path name of the virtual_folder
+				* @param sp_parent virtual_folder parent
+				*/
+				doc_file_item(int id, string path, string filetype, virtual_folder_pointer sp_parent);
 
                 int _id;
                 string _path;
                 string _filetype;
-                sp_virtual_folder _sp_parent;
+                virtual_folder_pointer _sp_parent;
 
             public:
 
@@ -65,14 +80,14 @@ namespace doclib
 				*
 				* @return never null
 				*/
-				sp_virtual_folder get_parent() { return _sp_parent; }
+				virtual_folder_pointer get_parent() { return _sp_parent; }
 
 				/**
 				 * @brief return parent virtual folder (or itself for root) const version
 				 *
 				 * @return never null
 				 */
-				const sp_virtual_folder get_parent() const { return _sp_parent; }
+				const virtual_folder_pointer get_parent() const { return _sp_parent; }
 
 
 		};

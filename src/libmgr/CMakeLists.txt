@@ -12,7 +12,7 @@ add_library(libmgr doc_file_item.cpp virtual_folder.cpp doc_database.cpp)
 
 # link with following libraries :
 #	libtinyxml
-target_link_libraries(libmgr libtinyxml)
+target_link_libraries(libmgr tinyxml)
 #	doclib::libcore
 target_link_libraries(libmgr core)
 #	boost::filesystem

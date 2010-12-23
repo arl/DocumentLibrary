@@ -14,7 +14,7 @@ namespace doclib
 		using namespace std;
 
 		// forwafrd declaration
-		//class sp_virtual_folder;
+		//class virtual_folder_pointer;
 
 
         class doc_database
@@ -59,7 +59,7 @@ namespace doclib
 				*
 				* @return root virtual folder shared pointer
 				*/
-				sp_virtual_folder get_root_vf() { return _sproot_vf;}
+				virtual_folder_pointer get_root_vf() { return _sproot_vf;}
 
             private:
 
@@ -73,7 +73,7 @@ namespace doclib
 
 				bool load_description_file();
 
-				sp_virtual_folder	_sproot_vf;		// root virtual folder
+				virtual_folder_pointer	_sproot_vf;		// root virtual folder
 				string				_root_path;		// database root path
         };
 

@@ -5,6 +5,6 @@
 #########################################################
 
 add_definitions(-DTIXML_USE_STL)
-add_library(libtinyxml tinyxml.cpp tinyxmlerror.cpp tinyxmlparser.cpp)
+add_library(tinyxml tinyxml.cpp tinyxmlerror.cpp tinyxmlparser.cpp)
 
-install (TARGETS libtinyxml DESTINATION "${DOCLIBRARY_BINARY_DIR}/lib")
+install (TARGETS tinyxml DESTINATION "${DOCLIBRARY_BINARY_DIR}/lib")

@@ -8,21 +8,23 @@
 include_directories("${DOCLIBRARY_SOURCE_DIR}")
 
 # executable creation
-add_executable(doclibd main.cpp)
+#add_executable(doclibd io_service_pool.cpp reply.cpp request_handler.cpp request_parser.cpp connection.cpp server.cpp main.cpp)
+#add_executable(doclibd io_service_pool.cpp)
+#add_executable(doclibd io_service_pool.cpp reply.cpp request_handler.cpp request_parser.cpp server.cpp main.cpp)
+add_executable(doclibd connection.cpp reply.cpp request_parser.cpp request_handler.cpp server.cpp io_service_pool.cpp main.cpp)
+
 
 # link with following libraries :
 #	core
 target_link_libraries(doclibd core)
 #	library
 target_link_libraries(doclibd libmgr)
+#	boost::thread
+target_link_libraries(doclibd libboost_thread.so)
 #	boost::program_options
 target_link_libraries(doclibd libboost_program_options.so)
 #	boost::filesystem
 target_link_libraries(doclibd libboost_filesystem.so)
-#	libpthread
-#target_link_libraries(doclibd libpthread.a)
-#	libc
-#target_link_libraries(doclibd libc.a)
 
 # explicitely tell about doclibd dependencies
 add_dependencies(doclibd libmgr)
@@ -47,14 +49,12 @@ foreach(file ${CONFIG_FILES})
 
 	set(result "NOTFOUND")
 
-			  #PATHS ${DOCLIBRARY_SOURCE_DIR}/
 	# look for config file in install dir
 	find_file(result "${file}"
 			PATHS "${DOCLIBRARY_BINARY_DIR}/bin"
 			NO_DEFAULT_PATH)
 
 	if(result STREQUAL "result-NOTFOUND")	
-		#install(FILES "${CONFIG_DIR}/${file}" DESTINATION "${DOCLIBRARY_BINARY_DIR}/bin")
 		message("file \"${file}\" not found in installation dir, copying to ${DOCLIBRARY_BINARY_DIR}/bin")
 		configure_file("${CONFIG_DIR}/${file}" "${DOCLIBRARY_BINARY_DIR}/bin/${file}" COPYONLY)
 	endif(result STREQUAL "result-NOTFOUND")

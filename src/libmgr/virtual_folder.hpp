@@ -20,33 +20,54 @@ namespace doclib
             private:
 
 				/**
+				* @brief convenience function to create a virtual folder shared pointer
+				* @note user created folders have no id yet, their id will be set
+				*	as _max_id -1
+				* @param path name of the virtual_folder
+				* @param sp_parent virtual_folder parent
+				*/
+				static virtual_folder_pointer create(string path, virtual_folder_pointer sp_parent);
+
+				/**
+				* @brief convenience function for 'xml file-created' virtual folder
+				* @note user created folders have no id yet, their id will be set
+				*	as _max_id -1
+				* @param path name of virtual folder
+				* @param id virtual folder id read from xml configuration file
+				* @param sp_parent virtual_folder parent
+				*/
+				static virtual_folder_pointer create(string path, int id, virtual_folder_pointer sp_parent);
+
+				/**
 				* @brief constructor for a user-created virtual folder
 				* @note user created folders have no id yet, their id will be set
 				*	as _max_id -1
 				* @param path name of the virtual_folder
+				* @param sp_parent virtual_folder parent
 				*/
-                virtual_folder(string path, sp_virtual_folder sp_parent);
+                virtual_folder(string path, virtual_folder_pointer sp_parent);
 
 				/**
 				* @brief 'xml file-created' virtual folder
 				*
 				* @param path name of virtual folder
 				* @param id virtual folder id indicated in xml file
+				* @param sp_parent virtual_folder parent
 				*/
-                virtual_folder(string path, int id, sp_virtual_folder sp_parent);
+                virtual_folder(string path, int id, virtual_folder_pointer sp_parent);
 
                 static int _max_id;
 
             protected:
 
-                typedef list<sp_doc_file_item> file_list_t;
+                typedef list<doc_file_item_pointer> file_list_t;
 
                 file_list_t _children;
 
             public:
 
                 // add a child to this virtual folder
-                void add_child(sp_doc_file_item sp_file);
+                void add_child(doc_file_item_pointer sp_file);
 
                 // remove a child
                 void remove_child(int child_id);
@@ -58,7 +79,7 @@ namespace doclib
                     file_list_t::iterator it = _children.begin();
                     while(it != _children.end())
                     {
-                        sp_doc_file_item sp_cur = *it;
+                        doc_file_item_pointer sp_cur = *it;
 
                         // call predicate on current child (default : before recursion)
 						if (!pred_called_last) 
