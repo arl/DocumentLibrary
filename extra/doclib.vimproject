@@ -1,0 +1,115 @@
+
+doclib=/home/orl/dev/DocumentLibrary CD=/home/orl/dev/doclib_build {
+
+	CMakeLists.txt
+	todo
+
+
+ extra=extra {
+  doclib.doxyfile
+  design=design {
+   daemon.protocol.descr
+   umbrello=umbrello {
+    doclib_design.xmi
+   }
+  }
+ }
+
+	test=./test {
+
+		CMakeLists.txt
+		libmgr_test.cpp
+		sync_client.cpp
+		README
+	}
+
+	config=./config {
+
+		db.xml
+		doclibd.conf
+	 }
+
+	src=./src {
+
+		version.hpp
+		doclib_includes.hpp
+		increment_number.sh
+	 }
+
+	 core=./src/core {
+
+		core_includes.hpp
+		doclib_exception.hpp
+		doclib_conf.hpp
+		doclib_conf.cpp
+		doclib_core.hpp
+		doclib_core.cpp
+		inifile.hpp
+		inifile.cpp
+		CMakeLists.txt
+		version.cpp
+	}
+
+ daemon=./src/daemon filter="*.hpp *.cpp *.txt" {
+  connection.hpp
+  connection.cpp
+  doclibd_includes.hpp
+  io_service_pool.hpp
+  io_service_pool.cpp
+  main.cpp
+  request.hpp
+  request_handler.hpp
+  request_handler.cpp
+  request_parser.hpp
+  request_parser.cpp
+  reply.hpp
+  reply.cpp
+  server.hpp
+  server.cpp
+  CMakeLists.txt
+ }
+
+   libmgr=./src/libmgr filter="*.hpp *.cpp *.txt" {
+		CMakeLists.txt
+		todo.txt
+		doc_database.cpp
+		doc_database.hpp
+		doc_file_item.cpp
+		doc_file_item.hpp
+		libmgr_includes.hpp
+		virtual_folder.cpp
+		virtual_folder.hpp
+
+		tinyxml=./tinyxml {
+			CMakeLists.txt
+			tinystr.cpp
+			tinystr.h
+			tinyxml.cpp
+			tinyxml.h
+			tinyxmlerror.cpp
+			tinyxmlparser.cpp
+		}
+   }
+}
+
+
+http-server=/usr/share/doc/libboost1.42-doc/examples/libs/asio/example/http/server filter="*.cpp *.hpp *.*.gz" {
+ connection.cpp
+ connection_manager.cpp
+ mime_types.cpp
+ posix_main.cpp
+ request_handler.cpp
+ server.cpp
+ win_main.cpp
+ connection.hpp
+ connection_manager.hpp
+ header.hpp
+ mime_types.hpp
+ reply.hpp
+ request.hpp
+ request_handler.hpp
+ request_parser.hpp
+ server.hpp
+ reply.cpp.gz
+ request_parser.cpp.gz
+}
