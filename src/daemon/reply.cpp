@@ -95,8 +95,10 @@ namespace doclib
 
 		std::vector<boost::asio::const_buffer> reply::to_buffers()
 		{
+			// write status code
 			std::vector<boost::asio::const_buffer> buffers;
-			buffers.push_back(status_strings::to_buffer(status));
+			buffers.push_back(boost::asio::buffer("200|AAA"));
+			/*
 			for (std::size_t i = 0; i < headers.size(); ++i)
 			{
 				header& h = headers[i];
@@ -106,6 +108,12 @@ namespace doclib
 				buffers.push_back(boost::asio::buffer(misc_strings::crlf));
 			}
 			buffers.push_back(boost::asio::buffer(misc_strings::crlf));
+			*/
+
+			// one buffer for size of next buffer
+			//buffers.push_back(boost::asio::buffer(content.size()));
+
+			// then next buffer itself
 			buffers.push_back(boost::asio::buffer(content));
 			return buffers;
 		}
@@ -244,6 +252,5 @@ namespace doclib
 			rep.headers[1].value = "text/html";
 			return rep;
 		}
-
 	}
 }

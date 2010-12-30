@@ -1,3 +1,4 @@
+#include "../core/doclib_core.hpp"
 #include "request_handler.hpp"
 #include <fstream>
 #include <sstream>
@@ -22,11 +23,18 @@ namespace doclib
 		{
 			// Decode url to path.
 			std::string request_path;
-			if (!url_decode(req.uri, request_path))
-			{
-				rep = reply::stock_reply(reply::bad_request);
-				return;
-			}
+
+			// DEBUG : to test server simultaneous request responding
+            LDBG_ << "request received : " << req.action;
+			rep.content = "request treated : " + boost::lexical_cast<std::string>(req.action);
+			return;
+
+
+//			if (!url_decode(req.uri, request_path))
+//			{
+//				rep = reply::stock_reply(reply::bad_request);
+//				return;
+//			}
 
 			// Request path must be absolute and not contain "..".
 			if (request_path.empty() || request_path[0] != '/'
@@ -72,7 +80,7 @@ namespace doclib
 			//rep.headers[1].value = mime_types::extension_to_type(extension);
 			rep.headers[1].value = "mime-type";
 		}
-
+/*
 		bool request_handler::url_decode(const std::string& in, std::string& out)
 		{
 			out.clear();
@@ -111,7 +119,7 @@ namespace doclib
 			}
 			return true;
 		}
-
+*/
 	}
 
 }

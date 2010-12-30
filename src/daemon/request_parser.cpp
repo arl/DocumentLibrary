@@ -1,5 +1,7 @@
 #include "request_parser.hpp"
 #include "request.hpp"
+#include <iostream>
+#include <boost/lexical_cast.hpp>
 
 namespace doclib
 {
@@ -8,279 +10,255 @@ namespace doclib
 	{
 
 		request_parser::request_parser()
-			: state_(method_start)
+			: state_(action_start)
 		{
 		}
 
 		void request_parser::reset()
 		{
-			state_ = method_start;
+			state_ = action_start;
 		}
+
+        int request_parser::convert_action_string(const std::string & str)
+        {
+            if (str == "VI")
+                return request::view_document;
+            else if (str == "DW")
+                return request::download_document;
+            else if (str == "QY")
+                return request::search_query;
+            else
+                return -1;
+        }
+
 
 		boost::tribool request_parser::consume(request& req, char input)
 		{
+		    static std::string cur_action;			// action being consmumed
+		    static std::string cur_digits;			// digits being consumed
+		    static std::size_t num_args = 0;		// total number of arguments
+		    static std::size_t cur_arg = 0;			// currently consumed argument
+			static std::size_t cur_arg_size = 0;	// current argument size in bytes
+			static std::size_t bytes_read = 0;		// current argument consumed bytes
+
+			// DBG CODE
+			std::cout << "------------------------------------";
+			
+			switch(state_)
+			{
+				case action_start :
+					std::cout << "action_start" << std::endl;
+					break;
+				case action :
+					std::cout << "action" << std::endl;
+					break;
+				case action_end :
+					std::cout << "action_end" << std::endl;
+					break;
+				case count_args_start :
+					std::cout << "count_args_start" << std::endl;
+					break;
+				case count_args :
+					std::cout << "count_args" << std::endl;
+					break;
+				case arg_size_start :
+					std::cout << "arg_size_start" << std::endl;
+					break;
+				case arg_size :
+					std::cout << "arg_size" << std::endl;
+					break;
+				case arg_data :
+					std::cout << "arg_data" << std::endl;
+					break;
+				case arg_data_end :
+					std::cout << "arg_data_end" << std::endl;
+					break;
+				case packet_end :
+					std::cout << "packet_end" << std::endl;
+					break;
+				default:
+					std::cout << "default" << std::endl;
+					break;
+			}
+
+			// DBG CODE
+			std::cout << "cur_action : " << cur_action << " : cur_digits : " << cur_digits << std::endl;
+			std::cout << "num_args : " << num_args << " : cur_arg : " << cur_arg << std::endl;
+			std::cout << "cur_arg_size : " << cur_arg_size << " : bytes_read : " << bytes_read << std::endl;
+
 			switch (state_)
 			{
-				case method_start:
+                case action_start:
+
+                    cur_action.clear();
 					if (!is_char(input) || is_ctl(input) || is_tspecial(input))
 					{
 						return false;
 					}
 					else
 					{
-						state_ = method;
-						req.method.push_back(input);
+                        state_ = action;
+						cur_action.push_back(input);
 						return boost::indeterminate;
 					}
-				case method:
-					if (input == ' ')
-					{
-						state_ = uri;
-						return boost::indeterminate;
-					}
-					else if (!is_char(input) || is_ctl(input) || is_tspecial(input))
+
+				case action:
+
+					if (!is_char(input) || is_ctl(input) || is_tspecial(input))
 					{
 						return false;
 					}
 					else
 					{
-						req.method.push_back(input);
+                        state_ = action_end;
+						cur_action.push_back(input);
 						return boost::indeterminate;
 					}
-				case uri_start:
-					if (is_ctl(input))
+
+				case action_end:
+
+					if (!is_sep(input))
 					{
 						return false;
 					}
 					else
 					{
-						state_ = uri;
-						req.uri.push_back(input);
-						return boost::indeterminate;
+						int action = convert_action_string(cur_action);
+						if (action == -1)
+						{
+						    return false;
+						}
+                        else
+                        {
+                            state_ = count_args_start;
+                            req.action = action;
+							return boost::indeterminate;
+                        }
 					}
-				case uri:
-					if (input == ' ')
-					{
-						state_ = http_version_h;
-						return boost::indeterminate;
-					}
-					else if (is_ctl(input))
+
+                case count_args_start:
+
+                    cur_digits.clear();
+					if (!is_digit(input))
 					{
 						return false;
 					}
 					else
 					{
-						req.uri.push_back(input);
+                        state_ = count_args;
+						cur_digits.push_back(input);
 						return boost::indeterminate;
 					}
-				case http_version_h:
-					if (input == 'H')
-					{
-						state_ = http_version_t_1;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case http_version_t_1:
-					if (input == 'T')
-					{
-						state_ = http_version_t_2;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case http_version_t_2:
-					if (input == 'T')
-					{
-						state_ = http_version_p;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case http_version_p:
-					if (input == 'P')
-					{
-						state_ = http_version_slash;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case http_version_slash:
-					if (input == '/')
-					{
-						req.http_version_major = 0;
-						req.http_version_minor = 0;
-						state_ = http_version_major_start;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case http_version_major_start:
+
+				case count_args:
+
+					cur_arg = 0;
 					if (is_digit(input))
 					{
-						req.http_version_major = req.http_version_major * 10 + input - '0';
-						state_ = http_version_major;
+						cur_digits.push_back(input);
+						return boost::indeterminate;
+					}
+					else if (is_sep(input))
+					{
+						// end of 'number of arguments' field
+						num_args = boost::lexical_cast<std::size_t>(cur_digits);
+						if (num_args == 0)
+							state_ = packet_end;
+						else
+							state_ = arg_size_start;
 						return boost::indeterminate;
 					}
 					else
 					{
 						return false;
 					}
-				case http_version_major:
-					if (input == '.')
-					{
-						state_ = http_version_minor_start;
-						return boost::indeterminate;
-					}
-					else if (is_digit(input))
-					{
-						req.http_version_major = req.http_version_major * 10 + input - '0';
-						return boost::indeterminate;
-					}
-					else
+
+				case arg_size_start:
+
+                    cur_digits.clear();
+					if (!is_digit(input))
 					{
 						return false;
 					}
-				case http_version_minor_start:
+					else
+					{
+                        state_ = arg_size;
+						cur_digits.push_back(input);
+						return boost::indeterminate;
+					}
+
+				case arg_size:
+
 					if (is_digit(input))
 					{
-						req.http_version_minor = req.http_version_minor * 10 + input - '0';
-						state_ = http_version_minor;
+						cur_digits.push_back(input);
+						return boost::indeterminate;
+					}
+					else if (is_sep(input))
+					{
+						// end of 'argument size' field
+						cur_arg_size = boost::lexical_cast<std::size_t>(cur_digits);
+						bytes_read = 0;
+
+						if (cur_arg_size == 0)
+							state_ = arg_data_end;
+						else
+							state_ = arg_data;
+
+						// add an argument
+						req.args.push_back(std::string());
+						req.arg_sizes.push_back(cur_arg_size);
 						return boost::indeterminate;
 					}
 					else
 					{
 						return false;
 					}
-				case http_version_minor:
-					if (input == '\r')
-					{
-						state_ = expecting_newline_1;
-						return boost::indeterminate;
-					}
-					else if (is_digit(input))
-					{
-						req.http_version_minor = req.http_version_minor * 10 + input - '0';
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case expecting_newline_1:
-					if (input == '\n')
-					{
-						state_ = header_line_start;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case header_line_start:
-					if (input == '\r')
-					{
-						state_ = expecting_newline_3;
-						return boost::indeterminate;
-					}
-					else if (!req.headers.empty() && (input == ' ' || input == '\t'))
-					{
-						state_ = header_lws;
-						return boost::indeterminate;
-					}
-					else if (!is_char(input) || is_ctl(input) || is_tspecial(input))
+
+				case arg_data:
+
+					req.args[cur_arg].push_back(input);
+					if (++bytes_read == cur_arg_size)
+						state_ = arg_data_end;	
+
+					//std::cout << "req.args[" << cur_arg << "] = " << req.args[cur_arg] << std::endl;
+					return boost::indeterminate;
+
+				case arg_data_end:
+
+					if (!is_sep(input))
 					{
 						return false;
 					}
 					else
 					{
-						req.headers.push_back(header());
-						req.headers.back().name.push_back(input);
-						state_ = header_name;
+						// end of description argument, start a new one?
+						if (++cur_arg < num_args)
+						{
+							std::cout << " if (++cur_arg < num_args)" << std::endl;
+							// there are more args left
+							state_ = arg_size_start;
+						}
+						else
+						{
+							// this was the last arg
+							std::cout << "this was the last arg" << std::endl;
+							state_ = packet_end;
+						}
 						return boost::indeterminate;
 					}
-				case header_lws:
-					if (input == '\r')
+
+				case packet_end:
+
+					if (is_sep(input))
 					{
-						state_ = expecting_newline_2;
-						return boost::indeterminate;
-					}
-					else if (input == ' ' || input == '\t')
-					{
-						return boost::indeterminate;
-					}
-					else if (is_ctl(input))
-					{
-						return false;
-					}
-					else
-					{
-						state_ = header_value;
-						req.headers.back().value.push_back(input);
-						return boost::indeterminate;
-					}
-				case header_name:
-					if (input == ':')
-					{
-						state_ = space_before_header_value;
-						return boost::indeterminate;
-					}
-					else if (!is_char(input) || is_ctl(input) || is_tspecial(input))
-					{
-						return false;
-					}
-					else
-					{
-						req.headers.back().name.push_back(input);
-						return boost::indeterminate;
-					}
-				case space_before_header_value:
-					if (input == ' ')
-					{
-						state_ = header_value;
-						return boost::indeterminate;
+						return true;
 					}
 					else
 					{
 						return false;
 					}
-				case header_value:
-					if (input == '\r')
-					{
-						state_ = expecting_newline_2;
-						return boost::indeterminate;
-					}
-					else if (is_ctl(input))
-					{
-						return false;
-					}
-					else
-					{
-						req.headers.back().value.push_back(input);
-						return boost::indeterminate;
-					}
-				case expecting_newline_2:
-					if (input == '\n')
-					{
-						state_ = header_line_start;
-						return boost::indeterminate;
-					}
-					else
-					{
-						return false;
-					}
-				case expecting_newline_3:
-					return (input == '\n');
+
 				default:
 					return false;
 			}
@@ -313,6 +291,11 @@ namespace doclib
 		bool request_parser::is_digit(int c)
 		{
 			return c >= '0' && c <= '9';
+		}
+
+		bool request_parser::is_sep(int c)
+		{
+			return c == '|';
 		}
 
 	}

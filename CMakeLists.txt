@@ -23,16 +23,16 @@ FIND_PACKAGE( Boost 1.42 COMPONENTS system filesystem program_options )
 enable_testing()
 
 # sets source directory if not defined
-if (NOT DEFINED DOCLIBRARY_SOURCE_DIR)
-	set (DOCLIBRARY_SOURCE_DIR PATH "source destination directory" FORCE)
-	set (DOCLIBRARY_SOURCE_DIR "/home/orl/dev/DocumentLibrary")
-endif (NOT DEFINED DOCLIBRARY_SOURCE_DIR)
+#if (NOT DEFINED DOCLIBRARY_SOURCE_DIR)
+	#set (DOCLIBRARY_SOURCE_DIR PATH "source destination directory" FORCE)
+	#set (DOCLIBRARY_SOURCE_DIR "/home/orl/dev/DocumentLibrary")
+#endif (NOT DEFINED DOCLIBRARY_SOURCE_DIR)
 
 # sets binaries directory if not defined
-if (NOT DEFINED DOCLIBRARY_BINARY_DIR)
-	set (DOCLIBRARY_BINARY_DIR PATH "binaries destination directory" FORCE)
+#if (NOT DEFINED DOCLIBRARY_BINARY_DIR)
+	#set (DOCLIBRARY_BINARY_DIR PATH "binaries destination directory" FORCE)
 	set (DOCLIBRARY_BINARY_DIR "/home/orl/dev/doclib_install")
-endif (NOT DEFINED DOCLIBRARY_BINARY_DIR)
+#endif (NOT DEFINED DOCLIBRARY_BINARY_DIR)
 
 message ("currently generating : ${CMAKE_GENERATOR}")
 
@@ -65,3 +65,4 @@ add_subdirectory (test)
 
 # some tests to see if everything went ok
 add_test (LibManagerRuns "${DOCLIBRARY_BINARY_DIR}/test/bin/libmgr_test")
+add_test (ClientDebugTest "${DOCLIBRARY_BINARY_DIR}/test/bin/client_test")

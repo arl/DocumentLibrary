@@ -3,7 +3,7 @@
 
 #include <boost/logic/tribool.hpp>
 #include <boost/tuple/tuple.hpp>
-
+#include <string>
 
 namespace doclib
 {
@@ -42,46 +42,43 @@ namespace doclib
 					}
 
 			private:
+
+                /// Convert an action from a request packet to its enum value (or -1 for error).
+				int convert_action_string(const std::string & str);
+
 				/// Handle the next character of input.
 				boost::tribool consume(request& req, char input);
 
-				/// Check if a byte is an HTTP character.
+				/// Check if a byte is a printable character.
 				static bool is_char(int c);
 
-				/// Check if a byte is an HTTP control character.
+				/// Check if a byte is a control character.
 				static bool is_ctl(int c);
 
-				/// Check if a byte is defined as an HTTP tspecial character.
+				/// Check if a byte is defined as a special character.
 				static bool is_tspecial(int c);
 
 				/// Check if a byte is a digit.
 				static bool is_digit(int c);
 
+				/// Check if a byte is a separator.
+				static bool is_sep(int c);
+
 				/// The current state of the parser.
 				enum state
 				{
-					method_start,
-					method,
-					uri_start,
-					uri,
-					http_version_h,
-					http_version_t_1,
-					http_version_t_2,
-					http_version_p,
-					http_version_slash,
-					http_version_major_start,
-					http_version_major,
-					http_version_minor_start,
-					http_version_minor,
-					expecting_newline_1,
-					header_line_start,
-					header_lws,
-					header_name,
-					space_before_header_value,
-					header_value,
-					expecting_newline_2,
-					expecting_newline_3
-				} state_;
+					action_start,
+					action,
+					action_end,
+					count_args_start,
+					count_args,
+					arg_size_start,
+					arg_size,
+					//arg_data_start,
+					arg_data,
+					arg_data_end,
+					packet_end
+                } state_;
 		};
 
 	}

@@ -8,9 +8,6 @@
 include_directories("${DOCLIBRARY_SOURCE_DIR}")
 
 # executable creation
-#add_executable(doclibd io_service_pool.cpp reply.cpp request_handler.cpp request_parser.cpp connection.cpp server.cpp main.cpp)
-#add_executable(doclibd io_service_pool.cpp)
-#add_executable(doclibd io_service_pool.cpp reply.cpp request_handler.cpp request_parser.cpp server.cpp main.cpp)
 add_executable(doclibd connection.cpp reply.cpp request_parser.cpp request_handler.cpp server.cpp io_service_pool.cpp main.cpp)
 
 
@@ -54,7 +51,7 @@ foreach(file ${CONFIG_FILES})
 			PATHS "${DOCLIBRARY_BINARY_DIR}/bin"
 			NO_DEFAULT_PATH)
 
-	if(result STREQUAL "result-NOTFOUND")	
+	if(result STREQUAL "result-NOTFOUND")
 		message("file \"${file}\" not found in installation dir, copying to ${DOCLIBRARY_BINARY_DIR}/bin")
 		configure_file("${CONFIG_DIR}/${file}" "${DOCLIBRARY_BINARY_DIR}/bin/${file}" COPYONLY)
 	endif(result STREQUAL "result-NOTFOUND")
