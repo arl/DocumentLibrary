@@ -39,6 +39,7 @@ doclib=/home/orl/dev/DocumentLibrary CD=/home/orl/dev/doclib_build {
 	 core=./src/core {
 
 		core_includes.hpp
+		concurrent_queue.hpp
 		doclib_exception.hpp
 		doclib_conf.hpp
 		doclib_conf.cpp
