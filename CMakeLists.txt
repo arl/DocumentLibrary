@@ -49,6 +49,11 @@ add_subdirectory (src/libmgr)
 add_subdirectory (src/daemon)
 add_subdirectory (test)
 
+add_custom_command(TARGET doclibd POST_BUILD
+		COMMAND "doxygen doclib.doxyfile" 
+		WORKING_DIRECTORY "${DOCLIBRARY_BINARY_DIR}/extra"
+		COMMENT "generating doxygen documentation")
+
 # add pre build step : increment build number
 #add_custom_command (OUTPUT "${PROJECT_SOURCE_DIR}/")
 

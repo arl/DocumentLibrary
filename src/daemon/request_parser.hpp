@@ -13,58 +13,107 @@ namespace doclib
 
 		struct request;
 
-		/// Parser for incoming requests.
+		/**
+		* @brief Parser for incoming request
+		*/
 		class request_parser
 		{
 			public:
-				/// Construct ready to parse the request method.
+
+				/**
+				* @brief Construct ready to parse the request method.
+				*/
 				request_parser();
 
-				/// Reset to initial parser state.
+				/**
+				* @brief Reset to initial parser state.
+				*/
 				void reset();
 
-				/// Parse some data. The tribool return value is true when a complete request
-				/// has been parsed, false if the data is invalid, indeterminate when more
-				/// data is required. The InputIterator return value indicates how much of the
-				/// input has been consumed.
-				template <typename InputIterator>
-					boost::tuple<boost::tribool, InputIterator> parse(request& req,
-							InputIterator begin, InputIterator end)
+				/**
+				* @brief parse some data
+				*
+				* @param req the parsed request
+				* @param begin InputIterator first
+				* @param end InputIterator end
+				*
+				* @return  The tribool return value is true when a complete request
+				*	has been parsed, false if the data is invalid, indeterminate when more
+				*	data is required.
+				*/
+					template <typename InputIterator>
+				boost::tuple<boost::tribool, InputIterator> parse(request& req,
+						InputIterator begin, InputIterator end)
+				{
+					while (begin != end)
 					{
-						while (begin != end)
-						{
-							boost::tribool result = consume(req, *begin++);
-							if (result || !result)
-								return boost::make_tuple(result, begin);
-						}
-						boost::tribool result = boost::indeterminate;
-						return boost::make_tuple(result, begin);
+						boost::tribool result = consume(req, *begin++);
+						if (result || !result)
+							return boost::make_tuple(result, begin);
 					}
+					boost::tribool result = boost::indeterminate;
+					return boost::make_tuple(result, begin);
+				}
 
 			private:
 
-                /// Convert an action from a request packet to its enum value (or -1 for error).
+				/**
+				* @brief Convert an action string to an enum value
+				*
+				* @param str received action string
+				*
+				* @return action enum value (or -1 for error).
+				*/
 				int convert_action_string(const std::string & str);
 
-				/// Handle the next character of input.
+				/**
+				* @brief Handle the next character of input.
+				*
+				* @param req currently forged request
+				* @param input input character to be treated
+				*
+				* @return 
+				*/
 				boost::tribool consume(request& req, char input);
 
-				/// Check if a byte is a printable character.
+				/**
+				* @brief Check if a byte is a printable character.
+				*
+				* @param c input character
+				*/
 				static bool is_char(int c);
 
-				/// Check if a byte is a control character.
+				/**
+				* @brief Check if a byte is a control character.
+				*
+				* @param c input character
+				*/
 				static bool is_ctl(int c);
 
-				/// Check if a byte is defined as a special character.
+				/**
+				* @brief Check if a byte is defined as a special character.
+				*
+				* @param c input character
+				*/
 				static bool is_tspecial(int c);
 
-				/// Check if a byte is a digit.
+				/**
+				* @brief Check if a byte is a digit.
+				*
+				* @param c input character
+				*/
 				static bool is_digit(int c);
 
-				/// Check if a byte is a separator.
+				/**
+				* @brief Check if a byte is a separator.
+				*
+				* @param c input character
+				*/
 				static bool is_sep(int c);
 
-				/// The current state of the parser.
+				/**
+				* @brief The current state of the parser.
+				*/
 				enum state
 				{
 					action_start,
@@ -74,7 +123,6 @@ namespace doclib
 					count_args,
 					arg_size_start,
 					arg_size,
-					//arg_data_start,
 					arg_data,
 					arg_data_end,
 					packet_end

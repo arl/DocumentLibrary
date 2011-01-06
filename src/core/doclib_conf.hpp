@@ -31,14 +31,69 @@ namespace doclib
 				 */
 				bool save(string filename);
 
-				string	filename;			// configuration filename
+				/**
+				* @brief get config filename
+				*
+				* @return filename 
+				*/
+				std::string get_filename() const;
 
-				// general values
-				string	log_filename;		// log file path
-				bl::level::type	log_level;	// logger level
+				/**
+				* @brief get log file path
+				*
+				* @return log file path
+				*/
+				std::string get_log_filename() const;
 
-				// databse description file
-				string	db_description_file;		// document database descritption file path
+				/**
+				* @brief get database description file name
+				*
+				* @return db description file name
+				*/
+				std::string get_db_description_file() const;
+
+				/**
+				* @brief get log level
+				*
+				* @return log level
+				*/
+				bl::level::type	get_log_level() const;
+
+				/**
+				* @brief get daemon server port number
+				*
+				* @return port number
+				*/
+				unsigned int get_port() const;
+
+
+				/**
+				* @brief get number of threads for daemon
+				*
+				* @return number of threads
+				*/
+				unsigned int get_num_threads() const;
+
+
+			private:
+
+				/// configuration filename
+				string	filename;
+
+				/// log file path
+				string	log_filename;
+
+				/// logger level
+				bl::level::type	log_level;
+
+				/// server listening port
+				unsigned int port;
+
+				/// daemon number of threads
+				unsigned int num_threads;
+
+				/// document database description file path
+				string	db_description_file;
 		};
 
 	}

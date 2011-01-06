@@ -260,7 +260,7 @@ namespace doclib
 				// TODO CONTINUE HERE
 				return true;
 			}
-			LERR_ << "document database description file not found \"" << _conf.db_description_file << "\"";
+			LERR_ << "document database description file not found \"" << _conf.get_db_description_file() << "\"";
 			return false;
 		}
 
@@ -269,9 +269,9 @@ namespace doclib
 			bool ret = false;
 
 			TiXmlDocument doc;
-			if (bfs::exists(_conf.db_description_file))
+			if (bfs::exists(_conf.get_db_description_file()))
 			{
-				if (doc.LoadFile(_conf.db_description_file))
+				if (doc.LoadFile(_conf.get_db_description_file()))
 				{
 					TiXmlHandle hdoc(&doc);
 
@@ -306,14 +306,14 @@ namespace doclib
 							ret = true;
 						}
 						else
-							LERR_ << "syntax error in document database description \"" << _conf.db_description_file << "\"" << " no <root_path> and/or root <virtual folder> tag found";
+							LERR_ << "syntax error in document database description \"" << _conf.get_db_description_file() << "\"" << " no <root_path> and/or root <virtual folder> tag found";
 
 					}
 					else
-						LERR_ << "syntax error in document database description \"" << _conf.db_description_file << "\"" << " no <folder_structure> tag found";
+						LERR_ << "syntax error in document database description \"" << _conf.get_db_description_file() << "\"" << " no <folder_structure> tag found";
 				}
 				else
-					LERR_ << "can not load document database description \"" << _conf.db_description_file << "\"" << doc.ErrorDesc();
+					LERR_ << "can not load document database description \"" << _conf.get_db_description_file() << "\"" << doc.ErrorDesc();
 			}
 
 			return ret;

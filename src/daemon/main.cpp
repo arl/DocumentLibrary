@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
 		if (cfg.load(config_file))
 		{
 			// init log instance, providing it 'ini file loaded' values
-			doclib::core::core_services::init_logging(cfg.log_filename, cfg.log_level);
+			doclib::core::core_services::init_logging(cfg.get_log_filename(), cfg.get_log_level());
 			LDBG_ << "successfully loaded configuration file";
 
 			doclib::libmgr::doc_database::create_instance(cfg);
@@ -99,11 +99,10 @@ int main(int argc, char ** argv)
 				ret = EXIT_SUCCESS;
 
 
-				// server default parameters
+				// load daemon server parameters
 				string address = "0.0.0.0";
-				string port = "36000";
-				string doc_root = "/";
-				std::size_t num_threads = 2;
+				string port = boost::lexical_cast<std::string>(cfg.get_port());
+				std::size_t num_threads = cfg.get_num_threads();
 
 // posix server
 #if !defined(_WIN32)
@@ -115,7 +114,7 @@ int main(int argc, char ** argv)
 				pthread_sigmask(SIG_BLOCK, &new_mask, &old_mask);
 
 				// Run server in background thread.
-				doclib::daemon::server s(address, port, doc_root, num_threads);
+				doclib::daemon::server s(address, port, num_threads);
 				boost::thread t(boost::bind(&doclib::daemon::server::run, &s));
 
 				// Restore previous signals.

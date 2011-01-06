@@ -56,10 +56,14 @@ field separator : '|' character
 
 
 
-        /// A request received from a client
+		/**
+		* @brief Represents a request received from a client
+		*/
         struct request
         {
-            /// The request action.
+			/**
+			* @brief request action code
+			*/
             enum action
             {
                 view_document,
@@ -67,10 +71,40 @@ field separator : '|' character
                 search_query
             } action_;
 
+			/**
+			* @brief request action
+			*/
             int action;
+
+			/**
+			* @brief request arguments
+			*/
             std::vector<std::string> args;
-            std::vector<std::size_t> arg_sizes;;
-        };
+
+			/**
+			* @brief request argument sizes 
+			*/
+            std::vector<std::size_t> arg_sizes;
+
+			/**
+			* @brief request constructor
+			*/
+			request() : action(-1) {}
+
+			/**
+			* @brief request copy constructor
+			*
+			* @param copy instance to copy
+			*/
+			request(const request& copy)
+				: action(copy.action)
+			{
+				std::copy(copy.arg_sizes.begin(), copy.arg_sizes.end(),
+						std::back_inserter(arg_sizes));
+				std::copy(copy.args.begin(), copy.args.end(),
+						std::back_inserter(args));
+			}
+		};
 
 
 	}

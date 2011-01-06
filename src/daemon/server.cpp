@@ -8,12 +8,11 @@ namespace doclib
 	{
 
 		server::server(const std::string& address, const std::string& port,
-			const std::string& doc_root, std::size_t io_service_pool_size)
+			std::size_t io_service_pool_size)
 		  : io_service_pool_(io_service_pool_size),
 			acceptor_(io_service_pool_.get_io_service()),
 			new_connection_(new connection(
-				  io_service_pool_.get_io_service(), request_handler_)),
-			request_handler_(doc_root)
+				  io_service_pool_.get_io_service(), request_handler_))
 		{
 		  // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
 		  boost::asio::ip::tcp::resolver resolver(acceptor_.io_service());

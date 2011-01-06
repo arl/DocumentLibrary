@@ -39,20 +39,26 @@ namespace doclib
 
 				if (result)
 				{
+					// request is well formed
 					request_handler_.handle_request(request_, reply_);
+					// handle it and write reply
 					boost::asio::async_write(socket_, reply_.to_buffers(),
 							boost::bind(&connection::handle_write, shared_from_this(),
 								boost::asio::placeholders::error));
 				}
 				else if (!result)
 				{
+					// bad request
 					reply_ = reply::stock_reply(reply::bad_request);
+
+					// write error reply
 					boost::asio::async_write(socket_, reply_.to_buffers(),
 							boost::bind(&connection::handle_write, shared_from_this(),
 								boost::asio::placeholders::error));
 				}
 				else
 				{
+					// request parsing should continue
 					socket_.async_read_some(boost::asio::buffer(buffer_),
 							boost::bind(&connection::handle_read, shared_from_this(),
 								boost::asio::placeholders::error,

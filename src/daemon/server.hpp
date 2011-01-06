@@ -16,19 +16,15 @@ namespace doclib
 	namespace daemon
 	{
 
-		// forward declaration
-		//class io_service_pool;
-
-
 		/// The top-level class of the HTTP server.
 		class server
-		  : private boost::noncopyable
+			: private boost::noncopyable
 		{
 		public:
 		  /// Construct the server to listen on the specified TCP address and port, and
 		  /// serve up files from the given directory.
 		  explicit server(const std::string& address, const std::string& port,
-			  const std::string& doc_root, std::size_t io_service_pool_size);
+			  std::size_t io_service_pool_size);
 
 		  /// Run the server's io_service loop.
 		  void run();
