@@ -48,6 +48,7 @@ doclib=/home/orl/dev/DocumentLibrary CD=/home/orl/dev/doclib_build {
 		inifile.hpp
 		inifile.cpp
 		CMakeLists.txt
+		increment_version.cmake
 		version.cpp
 	}
 
