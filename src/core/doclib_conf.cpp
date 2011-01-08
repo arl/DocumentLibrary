@@ -13,18 +13,12 @@ namespace doclib
     namespace core
 	{
 
-		/**
-		 * create default configuration
-		 */
 		doclib_conf::doclib_conf()
 		{
 			// log_level set to minimum log output (only informationnal)
 			log_level = bl::level::info;
 		}
 
-		/**
-		 * load configuration from given filename
-		 */
 		bool doclib_conf::load(string _filename)
 		{
 			string line;
@@ -39,29 +33,46 @@ namespace doclib
 				if (ini.readFile())
 				{
 
-/**
-* @todo treat cases where key exists but values dont
-**/
-
-
 					// load general config values
 					long gal_id = ini.FindKey("general");
 					if (gal_id != inifile::noID)
 					{
-						log_filename = ini.GetValue(gal_id, "log_file");
-						string val = ini.GetValue(gal_id, "log_level");
-						if (val == "debug")
-							log_level = bl::level::debug;
-						if (val == "error")
-							log_level = bl::level::error;
+						long log_file_id = ini.FindValue(gal_id, "log_file");
+						long log_level_id = ini.FindValue(gal_id, "log_level");
 
+						if (log_file_id != inifile::noID)
+							log_filename = ini.GetValue(gal_id, log_file_id);
+						else
+						{
+							// use default log file value
+							log_filename = "/var/log/doclibd.log";			
+							cout << "could not find general::log_file value in \"" << _filename << "\", defaulting to \'" << log_filename << "\'" << std::endl;
+						}
+
+						string val;
+						if (log_level_id != inifile::noID)
+						{
+							val = ini.GetValue(gal_id, log_level_id);
+							if (val == "debug")
+								log_level = bl::level::debug;
+							else if (val == "info")
+								log_level = bl::level::info;
+							else if (val == "error")
+								log_level = bl::level::error;
+							else
+								// use default log file value
+								cout << "bad value for general::log_level in \"" << _filename << "\", defaulting to \'info\'" << std::endl;
+						}
+						else
+							// use default log file value
+							cout << "could not find general::log_level value in \"" << _filename << "\", defaulting to \'info\'" << std::endl;
+
+						/// @todo : put that at the end of function, when everything is sure ok
 						// if successfull, set conf filename
-						filename = filename;
+						filename = _filename;
 					}
 					else
 					{
-						// use default values for general key
-						log_filename = "/var/log/doclibd.log";			
 						log_level = bl::level::debug;
 					}
 
@@ -79,6 +90,7 @@ namespace doclib
 							throw doclib_exception(msg);
 						}
 						num_threads = ini.GetValueI(daemon_id, "num_threads", (unsigned int)-1);
+						if (num_threads == (unsigned int) -1)
 						{
 							string msg ("no daemon number of threads found in configuration in \"");
 							msg.append(_filename);
@@ -120,9 +132,6 @@ namespace doclib
 			return ret;
 		}
 
-		/**
-		 * save current configuration to given filename
-		 */
 		bool doclib_conf::save(string filename)
 		{
 			return true;

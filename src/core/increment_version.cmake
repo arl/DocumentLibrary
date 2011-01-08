@@ -28,12 +28,12 @@ message("Output file : ${OUT}")
 # read the whole file in $CONTENT
 file(READ ${IN} CONTENT)
 
-# replace number in the line containing $LOOKFOR by @NUMBER@
+# replace the number in the line containing $LOOKFOR by the string "@NUMBER@"
 string(REGEX REPLACE
 	"^(.*${LOOKFOR}.* )([0-9]+)(.*)$" "\\1@NUMBER@\\3"
 	CONTENT "${CONTENT}")
 
-# increment regex referenced number
+# increment regex-referenced number
 math(EXPR NUMBER "${CMAKE_MATCH_2} + 1")
 
 # log new version number

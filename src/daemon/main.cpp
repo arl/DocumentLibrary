@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
 		if (cfg.load(config_file))
 		{
 			// init log instance, providing it 'ini file loaded' values
-			doclib::core::core_services::init_logging(cfg.get_log_filename(), cfg.get_log_level());
+			doclib::core::core_services::init_logging(cfg);
 			LDBG_ << "successfully loaded configuration file";
 
 			doclib::libmgr::doc_database::create_instance(cfg);
@@ -148,7 +148,8 @@ int main(int argc, char ** argv)
 	}
 	catch(std::exception &e)
 	{
-		LERR_ << "exception thrown : " << e.what();
+		LERR_ << "exception thrown : " << e.what() << endl;
+		cerr << "exception thrown : " << e.what() << endl;
 	}
 
 	return ret;

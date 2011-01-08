@@ -68,10 +68,10 @@ namespace doclib
 			return *_inst;
 		}
 
-		void core_services::init_logging(string log_file, bl::level::type log_level)
+		void core_services::init_logging(const doclib_conf & conf)
 		{
 			// define filter on chosen level
-			g_l_filter()->set_enabled(log_level);
+			g_l_filter()->set_enabled(conf.get_log_level());
 
 			// formatting    : [idx] time [level] message \n
 			// destinations  : console, log_file and debug window
@@ -82,7 +82,7 @@ namespace doclib
 			//        ... and where should it be written to
 			g_l()->writer().add_destination( bl::destination::cout() );
 			g_l()->writer().add_destination( bl::destination::dbg_window() );
-			g_l()->writer().add_destination( bl::destination::file(log_file) );
+			g_l()->writer().add_destination( bl::destination::file(conf.get_log_filename()) );
 			g_l()->turn_cache_off();
 		}
 		

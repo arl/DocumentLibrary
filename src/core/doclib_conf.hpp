@@ -17,61 +17,73 @@ namespace doclib
 			public:
 
 				/**
-				 * create default configuration 
+				 * @brief constructor.
+				 *
+				 * create default configuration.
 				 */
 				doclib_conf();
 
 				/**
-				 * load configuration from given filename 
+				 * @brief load configuration from given filename.
+				 *
+				 * If loading succeeds, then get_filename returns the filename passed as argument.
+				 * @sa get_filename
+				 *
+				 * @param _filename file to load.
+				 *
+				 * @return true on success (success means that all mandatory values have been found.
+				 *
+				 * @todo finish treating cases where key exists but values dont
 				 */
 				bool load(string filename);
 
 				/**
-				 * save current configuration to given filename
+				 * @brief save current configuration to given filename.
 				 */
 				bool save(string filename);
 
 				/**
-				* @brief get config filename
-				*
-				* @return filename 
-				*/
+				 * @brief returns current configuration file name.
+				 *
+				 * If configuration loading failed, then get_filename should not be used.
+				 *
+				 * @return configuration file name
+				 */
 				std::string get_filename() const;
 
 				/**
-				* @brief get log file path
-				*
-				* @return log file path
-				*/
+				 * @brief returns log file name.
+				 *
+				 * @return log file name
+				 */
 				std::string get_log_filename() const;
 
 				/**
-				* @brief get database description file name
-				*
-				* @return db description file name
-				*/
+				 * @brief returns database description file name.
+				 *
+				 * @return database description file name
+				 */
 				std::string get_db_description_file() const;
 
 				/**
-				* @brief get log level
-				*
-				* @return log level
-				*/
+				 * @brief returns current log level.
+				 *
+				 * @return log level
+				 */
 				bl::level::type	get_log_level() const;
 
 				/**
-				* @brief get daemon server port number
-				*
-				* @return port number
-				*/
+				 * @brief returns daemon port number
+				 *
+				 * @return port number
+				 */
 				unsigned int get_port() const;
 
-
 				/**
-				* @brief get number of threads for daemon
-				*
-				* @return number of threads
-				*/
+				 * @brief returns daemon number of threads
+				 *
+				 * @return number of threads
+				 */
 				unsigned int get_num_threads() const;
 
 
