@@ -1,3 +1,21 @@
+/* Copyright (C) 
+* 2010 - Aurelien Rainone
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* 
+*/
+
 #include "doc_database.hpp"
 #include "virtual_folder.hpp"
 
@@ -8,8 +26,8 @@ namespace doclib
     {
 
 		/**
-		* @brief information printing predicate for file item
-		* @note	useful for debugging purposes
+		* @brief information printing predicate for file_item
+		* @note	used for debugging purposes
 		*/
 		struct print_file_item
 		{
@@ -98,15 +116,29 @@ namespace doclib
 							// actually create root virtual folder
 							virtual_folder_pointer sp_empty;	
 
-							// let create the root virtual folder as a shared pointer
+							// let's create the root virtual folder shared pointer
 							_spcur_vf = _sproot_vf = virtual_folder::create (name, -1, sp_empty);
-							LDBG_ << "allocating root at address " << lexical_cast<string>(_sproot_vf.get());
+
+							//LDBG_ << "allocating root at address " << lexical_cast<string>(_sproot_vf.get());
+
+							LDBG_ << "virtual_folder(root) : ";
+							LDBG_ << "    id       : " << _spcur_vf->get_id();
+							LDBG_ << "    path(act): " << _spcur_vf->get_path();
+							LDBG_ << "    path(vir): " << _spcur_vf->get_path(false);
+							LDBG_ << "    name     : " << _spcur_vf->get_name();
+							LDBG_ << "    filetype : " << _spcur_vf->get_filetype() << std::endl;
 						}
 						else
 						{
 							// create a new virtual folder
-							virtual_folder_pointer sp_new_vf = virtual_folder::create(name, id, _spcur_vf);
-							LDBG_ << "allocating " << sp_new_vf->get_path()  << " at address " << lexical_cast<string>(sp_new_vf.get());
+							virtual_folder_pointer sp_new_vf = virtual_folder::create (name, id, _spcur_vf);
+							//LDBG_ << "allocating " << sp_new_vf->get_path()  << " at address " << lexical_cast<string>(sp_new_vf.get());
+							LDBG_ << "virtual_folder : ";
+							LDBG_ << "    id       : " << sp_new_vf->get_id();
+							LDBG_ << "    path(act): " << sp_new_vf->get_path();
+							LDBG_ << "    path(vir): " << sp_new_vf->get_path(false);
+							LDBG_ << "    name     : " << sp_new_vf->get_name();
+							LDBG_ << "    filetype : " << sp_new_vf->get_filetype() << std::endl;
 
 							// add it to current vf
 							_spcur_vf->add_child(sp_new_vf);
@@ -151,6 +183,7 @@ namespace doclib
 					}
 
 					return true;
+
 				}
 
 				/// Visit an element.
@@ -188,6 +221,14 @@ namespace doclib
 						
 						// create the file with information obtained previously
 						doc_file_item_pointer spf = doc_file_item::create(_last_id, file.string(), file.extension(), _spcur_vf);
+
+						LDBG_ << "doc_file_item : ";
+						LDBG_ << "    id       : " << spf->get_id();
+						LDBG_ << "    path(act): " << spf->get_path();
+						LDBG_ << "    path(vir): " << spf->get_path(false);
+						LDBG_ << "    name     : " << spf->get_name();
+						LDBG_ << "    filetype : " << spf->get_filetype() << std::endl;
+
 						// add it as a child to current vf
 						_spcur_vf->add_child(spf);
 					}
@@ -317,6 +358,119 @@ namespace doclib
 			}
 
 			return ret;
+		}
+
+		struct find_child_with_name
+		{
+			find_child_with_name(std::string name_to_find) : _name_to_find(name_to_find), _found_id(0) {}
+
+			void operator() (const doc_file_item_pointer pvf)
+			{
+				if (pvf->get_name() == _name_to_find)
+					_found_id = pvf->get_id();
+			}
+			int _found_id;
+			const std::string _name_to_find;
+		};
+
+/*
+	
+	chemin complet : /vdir1/vdir2
+
+   [A] on cherche 'vdir2' depuis '/vdir1/'
+
+   1)	est-ce que vdir1 a un child du nom de vdir2?
+   		oui -> on retourne ce child
+		non -> existe pas, on retourne vide
+
+
+	chemin complet : /vdir1/vdir2/vdir3
+
+   [B] on cherche 'vdir2/vdir3' depuis '/vdir1/'
+
+   1)	est-ce que vdir1 a un child du nom de vdir2?
+   		oui -> on rappelle la fonction recursivement avec get_file_impl("vdir3", sp__/vdir1/vdir2 )
+		2) est-ce que vdir2 a un child du nom de vdir3?
+			oui -> on retourne ce child
+			non -> existe pas, on retourne vide
+
+		non -> existe pas, on retourne vide						 
+
+ browse_folder (/vdir1/vdir2)
+ calling get_file(/vdir1/vdir2, /)
+ calling __get_file_impl(/ depuis /)
+ found_id : -1
+ found a folder to continue recursion : /
+ calling __get_file_impl(vdir1 depuis /)
+ found_id : -2
+ found a folder to continue recursion : /vdir1
+ calling __get_file_impl(vdir2 depuis /vdir1)
+ found_id : -3
+ found a folder to continue recursion : /vdir1/vdir2
+ calling __get_file_impl( depuis /vdir1/vdir2)
+ found_id : 0
+ in handle_browse_folder /vdir1/vdir2 was not found
+
+
+*/
+		doc_file_item_pointer __get_file_impl(bfs::path::iterator start_itr, bfs::path::iterator end_itr, virtual_folder_pointer pvf)
+		{
+			LDBG_ << "calling __get_file_impl(" << *start_itr << " depuis " << pvf->get_path() << ")";
+
+			doc_file_item_pointer pfound;
+			int found_id;
+
+			// treating root folder special case here
+			if (*start_itr == "/" && pvf->get_id() == -1)
+				found_id = -1;
+			else
+				// look for path element pointed to by current path iterator in pvf children
+				found_id = pvf->for_each_child(find_child_with_name (*start_itr))._found_id;
+
+			LDBG_ << "found_id : " << found_id;
+
+			if (found_id != 0)
+			{
+				++start_itr;
+				// if we just had the required path last element
+				if (start_itr == end_itr)
+				{
+					LDBG_ << "end_itr has been got";
+
+					// retrieve file with its id
+					pfound = doc_database::get_instance().get_file(found_id);
+				}
+				// if its not yet the last path element, it has to be a folder to continue recursion
+				else if (found_id < 0)
+				{
+					// it's a folder, cast it
+					pfound = doc_database::get_instance().get_file(found_id);
+					LDBG_ << "found a folder to continue recursion : " << pfound->get_path();
+					virtual_folder_pointer pfoundvf = std::tr1::dynamic_pointer_cast<virtual_folder, doc_file_item>(pfound);
+					if (pfoundvf)
+						return __get_file_impl(start_itr, end_itr, pfoundvf);				
+				}
+			}
+			return pfound;
+		}
+
+		doc_file_item_pointer doc_database::get_file(std::string path, virtual_folder_pointer pvf_from /*= get_root_vf()*/)
+		{
+			bfs::path dir_path(path); 
+			
+			LDBG_ << "calling get_file(" << path << ", " << pvf_from->get_path() << ")";
+			doc_file_item_pointer pfi = __get_file_impl(dir_path.begin(), dir_path.end(), pvf_from);
+
+			return pfi;
+		}
+
+		doc_file_item_pointer doc_database::get_file(int id)
+		{
+			doc_file_item_pointer pfile;
+			file_map_t::iterator it = _files.find(id);
+			if (it != _files.end())
+				pfile = it->second;
+			return pfile;
 		}
 
 	}

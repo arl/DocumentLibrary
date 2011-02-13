@@ -4,7 +4,7 @@
 		<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
 	!-->
 <folder_structure>
-	<root_path>/home/orl/doclib_database</root_path>
+	<root_path>/home/orl/dev/doclib_database</root_path>
 	<virtual_folder name="/" id="-1">
 		<children>
 			<file id="1">
@@ -12,8 +12,17 @@
 			</file>
 			<virtual_folder name="vdir1" id="-2">
 				<children>
+					<virtual_folder name="vdir2" id="-3">
+						<children></children>
+					</virtual_folder>
 					<file id="2">
 						<path relative="1">example_file2.pdf</path>
+					</file>
+					<file id="3">
+						<path relative="1">./dir3/example_file3.pdf</path>
+					</file>
+					<file id="4">
+						<path relative="0">/home/orl/dev/doclib_database/example_file4.pdf</path>
 					</file>
 				</children>
 			</virtual_folder>

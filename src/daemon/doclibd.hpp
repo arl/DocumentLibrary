@@ -16,40 +16,35 @@
 * 
 */
 
-#ifndef DOCLIB_DAEMON_REQUEST_HANDLER_HPP
-#define DOCLIB_DAEMON_REQUEST_HANDLER_HPP
+#ifndef DOCLIB_DAEMON_DOCLIBD_HPP
+#define DOCLIB_DAEMON_DOCLIBD_HPP
 
 #include <string>
-#include <boost/noncopyable.hpp>
 
 namespace doclib
 {
 
 	namespace daemon
 	{
-
-		struct reply;
-		struct request;
-
-		/**
-		* @brief Common handler for all incoming requests.
-		*/
-		class request_handler
-			: private boost::noncopyable
+		enum e_command_line_treatment
 		{
-			public:
-				/// 
-				explicit request_handler();
-
-				/// Handle a request and produce a reply.
-				void handle_request(const request& req, reply& rep);
-
-				/// Handle a 'browser folder' request.
-				void handle_browse_folder(const request& req, reply& rep);
+			clt_success,	/// command-line treated with success
+			clt_failure,	/// failed to treat command line options
+			clt_help		///	help asked
 		};
+		
+		struct commandline_options
+		{
+			e_command_line_treatment treatment;
+			std::string config_file;
+		};
+
+		void treat_command_line(int argc, char ** argv, commandline_options & options);
+
+		const std::string get_version_string();
 
 	}
 
 }
 
-#endif // !DOCLIB_DAEMON_REQUEST_HANDLER_HPP
+#endif // !DOCLIB_DAEMON_DOCLIBD_HPP

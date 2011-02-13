@@ -25,6 +25,10 @@ screen -t build
 chdir /home/orl/dev/DocumentLibrary/
 screen -t git
 
+# midnight commander
+chdir /home/orl/dev/DocumentLibrary/src
+screen -t midnight mc
+
 # give a name to session
 sessionname doclib
 select src_code

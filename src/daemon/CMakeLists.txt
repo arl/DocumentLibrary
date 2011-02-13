@@ -8,7 +8,7 @@
 include_directories("${DOCLIBRARY_SOURCE_DIR}")
 
 # executable creation
-add_executable(doclibd connection.cpp reply.cpp request_parser.cpp request_handler.cpp server.cpp io_service_pool.cpp main.cpp)
+add_executable(doclibd connection.cpp reply.cpp request_parser.cpp request_handler.cpp server.cpp io_service_pool.cpp doclibd.cpp main.cpp)
 
 
 # link with following libraries :

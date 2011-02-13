@@ -1,3 +1,21 @@
+/* Copyright (C) 
+* 2010 - Aurelien Rainone
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* 
+*/
+
 #include "request_parser.hpp"
 #include "request.hpp"
 #include <iostream>
@@ -8,6 +26,16 @@ namespace doclib
 
 	namespace daemon
 	{
+
+		/************************************************************************/
+		/*  REQUEST SYNTAX
+
+			BW : browse_folder(string folder)
+
+
+		*/
+		/************************************************************************/
+
 
 		request_parser::request_parser()
 			: state_(action_start)
@@ -25,8 +53,10 @@ namespace doclib
                 return request::view_document;
             else if (str == "DW")
                 return request::download_document;
-            else if (str == "QY")
-                return request::search_query;
+			else if (str == "QY")
+				return request::search_query;			
+			else if (str == "BW")
+				return request::browse_folder;
             else
                 return -1;
         }
@@ -40,6 +70,7 @@ namespace doclib
 		    static std::size_t cur_arg = 0;			// currently consumed argument
 			static std::size_t cur_arg_size = 0;	// current argument size in bytes
 			static std::size_t bytes_read = 0;		// current argument consumed bytes
+/*
 
 			// DBG CODE
 			std::cout << "------------------------------------";
@@ -85,7 +116,7 @@ namespace doclib
 			std::cout << "cur_action : " << cur_action << " : cur_digits : " << cur_digits << std::endl;
 			std::cout << "num_args : " << num_args << " : cur_arg : " << cur_arg << std::endl;
 			std::cout << "cur_arg_size : " << cur_arg_size << " : bytes_read : " << bytes_read << std::endl;
-
+*/
 			switch (state_)
 			{
                 case action_start:
@@ -221,7 +252,6 @@ namespace doclib
 					if (++bytes_read == cur_arg_size)
 						state_ = arg_data_end;	
 
-					//std::cout << "req.args[" << cur_arg << "] = " << req.args[cur_arg] << std::endl;
 					return boost::indeterminate;
 
 				case arg_data_end:
@@ -235,14 +265,12 @@ namespace doclib
 						// end of description argument, start a new one?
 						if (++cur_arg < num_args)
 						{
-							std::cout << " if (++cur_arg < num_args)" << std::endl;
 							// there are more args left
 							state_ = arg_size_start;
 						}
 						else
 						{
 							// this was the last arg
-							std::cout << "this was the last arg" << std::endl;
 							state_ = packet_end;
 						}
 						return boost::indeterminate;

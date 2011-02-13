@@ -1,3 +1,21 @@
+/* Copyright (C) 
+* 2010 - Aurelien Rainone
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* 
+*/
+
 #ifndef DOCLIB_DAEMON_REQUEST_HPP
 #define DOCLIB_DAEMON_REQUEST_HPP
 
@@ -43,7 +61,8 @@ action : 2 ascii chars describing request action
 
     VI : view_document
     DW : download_document
-    QY : search_query
+	QY : search_query
+	BW : browse_folder
 
 
 field separator : '|' character
@@ -57,19 +76,20 @@ field separator : '|' character
 
 
 		/**
-		* @brief Represents a request received from a client
+		* @brief Request received from a client
 		*/
         struct request
         {
 			/**
 			* @brief request action code
 			*/
-            enum action
-            {
-                view_document,
-                download_document,
-                search_query
-            } action_;
+			enum e_action
+			{
+				view_document,
+				download_document,
+				search_query,
+				browse_folder
+			};
 
 			/**
 			* @brief request action
@@ -92,6 +112,48 @@ field separator : '|' character
 			request() : action(-1) {}
 
 			/**
+			 * @brief convert a request to a human readable function-like string
+			 *
+			 * @param req the request to convert
+			 *
+			 * @note for debugging purposes
+			 *
+			 * @return a function like string
+			 */
+			std::string to_string() const
+			{
+				std::string str;
+
+				switch (action)
+				{
+				case view_document:
+					str.assign("view_document (");
+					break;
+				case download_document:
+					str.assign("download_document (");
+					break;
+				case search_query:
+					str.assign("search_query (");
+					break;
+				case browse_folder:
+					str.assign("browse_folder (");
+					for (std::size_t i = 0; i < args.size(); ++i)
+					{
+						switch (i)
+						{
+						case 0:
+							str.append(args[0]);
+							break;
+						}
+					}
+					str.append(")");
+
+					break;
+				}
+				return str;
+			}
+
+			/**
 			* @brief request copy constructor
 			*
 			* @param copy instance to copy
@@ -105,7 +167,6 @@ field separator : '|' character
 						std::back_inserter(args));
 			}
 		};
-
 
 	}
 

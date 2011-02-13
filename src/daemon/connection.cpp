@@ -1,4 +1,23 @@
+/* Copyright (C) 
+* 2010 - Aurelien Rainone
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* 
+*/
+
 #include "connection.hpp"
+#include "../core/core_includes.hpp"
 #include <vector>
 #include <boost/bind.hpp>
 #include "request_handler.hpp"
@@ -41,6 +60,7 @@ namespace doclib
 				{
 					// request is well formed
 					request_handler_.handle_request(request_, reply_);
+
 					// handle it and write reply
 					boost::asio::async_write(socket_, reply_.to_buffers(),
 							boost::bind(&connection::handle_write, shared_from_this(),
@@ -49,7 +69,8 @@ namespace doclib
 				else if (!result)
 				{
 					// bad request
-					reply_ = reply::stock_reply(reply::bad_request);
+					reply_.stock_reply(reply::bad_request);
+					LERR_ << "bad request";	
 
 					// write error reply
 					boost::asio::async_write(socket_, reply_.to_buffers(),

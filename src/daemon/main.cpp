@@ -1,4 +1,23 @@
+/* Copyright (C) 
+* 2010 - Aurelien Rainone
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* 
+*/
+
 #include "doclibd_includes.hpp"
+#include "doclibd.hpp"
 #include "../core/doclib_core.hpp"
 #include "../libmgr/doc_database.hpp"
 #include "../version.hpp"
@@ -11,68 +30,13 @@
 #include <boost/lexical_cast.hpp>
 #include "server.hpp"
 
-#if !defined(_WIN32)
 # include <pthread.h>
 # include <signal.h>
-#endif // !_WIN32
 
 using namespace std;
 
-/**
- * Enumerations of the different possibilities after application startup
- */
-enum eStartupReturn
-{
-	esr_PRINT_HELP
-};
-
 // local instances
-string config_file;
-string version_str;
 doclib::core::doclib_conf cfg;
-
-void set_version_string()
-{
-	version_str.assign(lexical_cast<string>(doclib::version::major));
-	version_str.append(".");
-	version_str.append(lexical_cast<string>(doclib::version::minor));
-	version_str.append(".");
-	version_str.append(lexical_cast<string>(doclib::version::build));
-}
-
-int treat_command_line(int argc, char ** argv)
-{
-	// Declare the supported options.
-	po::options_description desc("Allowed options");
-	desc.add_options()
-		("help,h", "produce help message")
-		("config-file,c", po::value<string>(), "set configuration from filename instead")
-		;
-
-	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
-	po::notify(vm);
-
-	if (vm.count("help"))
-	{
-		cout << "DocLibrary version " << version_str << "\n";
-		cout << desc << "\n";
-		return EXIT_FAILURE;
-	}
-
-	if (vm.count("config-file"))
-	{
-		cout << "using "
-			<< vm["config-file"].as<string>() << " as configuration file." << endl;
-		config_file = vm["config-file"].as<string>();
-	} else {
-		// set default configuration file
-		config_file = string(DOCLIBD_DEFAULT_CFG_FILENAME);
-	}
-
-	return EXIT_SUCCESS;
-}
-
 
 
 int main(int argc, char ** argv)
@@ -81,11 +45,11 @@ int main(int argc, char ** argv)
 
 	try
 	{
-		set_version_string();
-		cout << "DocumentLibrary version " << version_str << endl;
-		treat_command_line(argc, argv);
+		doclib::daemon::commandline_options options;
+		cout << "DocumentLibrary version " << doclib::daemon::get_version_string() << endl;
+		treat_command_line(argc, argv, options);
 
-		if (cfg.load(config_file))
+		if (options.treatment == doclib::daemon::clt_success && cfg.load(options.config_file))
 		{
 			// init log instance, providing it 'ini file loaded' values
 			doclib::core::core_services::init_logging(cfg);
@@ -104,10 +68,7 @@ int main(int argc, char ** argv)
 				string port = boost::lexical_cast<std::string>(cfg.get_port());
 				std::size_t num_threads = cfg.get_num_threads();
 
-// posix server
-#if !defined(_WIN32)
-
-				// Block all signals for background thread.
+				// block signal handling until server is started
 				sigset_t new_mask;
 				sigfillset(&new_mask);
 				sigset_t old_mask;
@@ -116,7 +77,7 @@ int main(int argc, char ** argv)
 				// Run server in background thread.
 				doclib::daemon::server s(address, port, num_threads);
 				boost::thread t(boost::bind(&doclib::daemon::server::run, &s));
-
+				
 				// Restore previous signals.
 				pthread_sigmask(SIG_SETMASK, &old_mask, 0);
 
@@ -132,9 +93,9 @@ int main(int argc, char ** argv)
 
 				// Stop the server.
 				s.stop();
+				L_ << "server stopped" << std::endl;
 				t.join();
-
-#endif // !defined(_WIN32)
+				LDBG_ << "background thread stopped" << std::endl;
 
 			}
 			else
@@ -144,7 +105,7 @@ int main(int argc, char ** argv)
 			doclib::libmgr::doc_database::destroy_instance();
 		}
 		else
-			cerr << "incorrect configuration (" << config_file << ")" << endl;
+			cerr << "incorrect configuration (" << options.config_file << ")" << endl;
 	}
 	catch(std::exception &e)
 	{

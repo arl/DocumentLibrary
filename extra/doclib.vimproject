@@ -4,7 +4,6 @@ doclib=/home/orl/dev/DocumentLibrary CD=/home/orl/dev/doclib_build {
 	CMakeLists.txt
 	todo
 
-
  extra=extra {
   doclib.doxyfile
   design=design {
@@ -33,42 +32,50 @@ doclib=/home/orl/dev/DocumentLibrary CD=/home/orl/dev/doclib_build {
 
 		version.hpp
 		doclib_includes.hpp
-		increment_number.sh
 	 }
 
-	 core=./src/core {
-
-		core_includes.hpp
-		concurrent_queue.hpp
-		doclib_exception.hpp
-		doclib_conf.hpp
-		doclib_conf.cpp
-		doclib_core.hpp
-		doclib_core.cpp
-		inifile.hpp
-		inifile.cpp
-		CMakeLists.txt
-		increment_version.cmake
-		version.cpp
-	}
-
- daemon=./src/daemon filter="*.hpp *.cpp *.txt" {
-  connection.hpp
-  connection.cpp
-  doclibd_includes.hpp
-  io_service_pool.hpp
-  io_service_pool.cpp
-  main.cpp
-  request.hpp
-  request_handler.hpp
-  request_handler.cpp
-  request_parser.hpp
-  request_parser.cpp
-  reply.hpp
-  reply.cpp
-  server.hpp
-  server.cpp
+ core=src/core {
   CMakeLists.txt
+  core_includes.hpp
+  doclib_conf.cpp
+  doclib_conf.hpp
+  doclib_core.cpp
+  doclib_core.hpp
+  doclib_exception.hpp
+  increment_version.cmake
+  inifile.cpp
+  inifile.hpp
+  version.cpp
+ }
+
+ daemon=src/daemon {
+
+  CMakeLists.txt
+  connection.cpp
+  connection.hpp
+  doclibd.cpp
+  doclibd.hpp
+  doclibd_includes.hpp
+  io_service_pool.cpp
+  io_service_pool.hpp
+  main.cpp
+  reply.cpp
+  reply.hpp
+  request.hpp
+  request_handler.cpp
+  request_handler.hpp
+  request_parser.cpp
+  request_parser.hpp
+  server.cpp
+  server.hpp
+  winmain.cpp
+
+  win=win {
+   doclibd.aps
+   doclibd.ico
+   doclibd.rc
+   resource.h
+  }
  }
 
    libmgr=./src/libmgr filter="*.hpp *.cpp *.txt" {
@@ -81,37 +88,5 @@ doclib=/home/orl/dev/DocumentLibrary CD=/home/orl/dev/doclib_build {
 		libmgr_includes.hpp
 		virtual_folder.cpp
 		virtual_folder.hpp
-
-		tinyxml=./tinyxml {
-			CMakeLists.txt
-			tinystr.cpp
-			tinystr.h
-			tinyxml.cpp
-			tinyxml.h
-			tinyxmlerror.cpp
-			tinyxmlparser.cpp
-		}
    }
-}
-
-
-http-server=/usr/share/doc/libboost1.42-doc/examples/libs/asio/example/http/server filter="*.cpp *.hpp *.*.gz" {
- connection.cpp
- connection_manager.cpp
- mime_types.cpp
- posix_main.cpp
- request_handler.cpp
- server.cpp
- win_main.cpp
- connection.hpp
- connection_manager.hpp
- header.hpp
- mime_types.hpp
- reply.hpp
- request.hpp
- request_handler.hpp
- request_parser.hpp
- server.hpp
- reply.cpp.gz
- request_parser.cpp.gz
 }
